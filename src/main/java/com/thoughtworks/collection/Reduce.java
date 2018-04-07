@@ -1,8 +1,7 @@
 package com.thoughtworks.collection;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Reduce {
 
@@ -13,43 +12,74 @@ public class Reduce {
     }
 
     public int getMaximum() {
-        throw new NotImplementedException();
+        return arrayList.stream().mapToInt(Integer::intValue).max().getAsInt();
     }
 
     public double getMinimum() {
-        throw new NotImplementedException();
+        return arrayList.stream().mapToInt(Integer::intValue).min().getAsInt();
     }
 
     public double getAverage() {
-        throw new NotImplementedException();
+        return arrayList.stream().collect(Collectors.averagingDouble(Integer::intValue));
     }
 
     public double getOrderedMedian() {
-        throw new NotImplementedException();
+        int index = arrayList.size() / 2;
+        if (arrayList.size() % 2 == 0) {
+            return arrayList.stream().sorted().skip(index - 1).limit(2).collect(Collectors.averagingDouble(n -> n));
+        } else {
+            return arrayList.stream().sorted().skip(index).findFirst().get();
+        }
     }
 
     public int getFirstEven() {
-        throw new NotImplementedException();
+        return arrayList.stream().filter(n -> n % 2 == 0).findFirst().get();
     }
 
     public int getIndexOfFirstEven() {
-        throw new NotImplementedException();
+        int index = 0;
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i) % 2 == 0) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     public boolean isEqual(List<Integer> arrayList) {
-        throw new NotImplementedException();
+        boolean flag1 = this.arrayList.stream().filter(n -> !arrayList.contains(n)).collect(Collectors.toList()).isEmpty();
+        boolean flag2 = arrayList.stream().filter(n -> !this.arrayList.contains(n)).collect(Collectors.toList()).isEmpty();
+        return flag1 && flag2;
     }
 
     //实现接口SingleLink，然后再此函数内使用
-    public Double getMedianInLinkList(SingleLink singleLink) {
-        throw new NotImplementedException();
+    public Double getMedianInLinkList(SingleLink<Integer> singleLink) {
+        for (int i = 0; i < arrayList.size(); i++) {
+            singleLink.addTailPointer(arrayList.get(i));
+        }
+        int index = arrayList.size();
+        if (index % 2 == 0) {
+            int result = singleLink.getNode(index / 2) + singleLink.getNode(index / 2 + 1);
+            return (double) result / 2;
+        } else {
+            return (double) singleLink.getNode(index / 2 + 1);
+        }
     }
 
     public int getLastOdd() {
-        throw new NotImplementedException();
+        long count = arrayList.stream().filter(n -> n % 2 != 0).count();
+        return arrayList.stream().filter(n -> n % 2 != 0).skip(count - 1).findFirst().get();
     }
 
     public int getIndexOfLastOdd() {
-        throw new NotImplementedException();
+        int index = 0;
+        for (int i = arrayList.size() - 1; i >= 0; i--) {
+            if (arrayList.get(i) % 2 != 0) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 }
